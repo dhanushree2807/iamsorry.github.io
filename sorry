@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Favorite Person</title>
+    <style>
+        :root {
+            --bg-color: #fff5f6;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --accent-color: #ff7b93;
+            --accent-hover: #ff5271;
+            --text-color: #5c4146;
+            --text-muted: #8c6d73;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            background-image: radial-gradient(rgba(255, 182, 193, 0.2) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        /* Lock Screen Layout */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffeef0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+        }
+
+        .lock-container {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(255, 123, 147, 0.15);
+            border: 1px solid rgba(255, 123, 147, 0.2);
+            max-width: 90%;
+            width: 380px;
+        }
+
+        .lock-container h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-weight: normal;
+        }
+
+        input[type="password"] {
+            padding: 14px 20px;
+            width: 100%;
+            border: 2px solid #ffe0e5;
+            border-radius: 12px;
+            margin-top: 10px;
+            background: #fff9fa;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 4px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input[type="password"]:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(255, 123, 147, 0.2);
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 14px 32px;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 123, 147, 0.3);
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(255, 123, 147, 0.4);
+        }
+
+        .error-msg {
+            color: var(--accent-hover);
+            margin-top: 12px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Main Content Screen */
+        #content-screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 6rem 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            font-weight: normal;
+            min-height: 3.5rem;
+        }
+
+        header p {
+            margin-top: 15px;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        /* Interactive Paragraph Cards */
+        .paragraph-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 4.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 24px rgba(255, 182, 193, 0.1);
+            line-height: 2;
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .paragraph-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .paragraph-card:hover {
+            transform: translateY(-4px);
+            background: #ffffff;
+            border-color: rgba(255, 123, 147, 0.3);
+            box-shadow: 0 12px 30px rgba(255, 123, 147, 0.15);
+        }
+
+        /* Floating Hearts Animation Background */
+        #heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 123, 147, 0.25);
+            font-size: 1.5rem;
+            animation: floatUp 6s linear infinite;
+            bottom: -50px;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-105vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Optional: Background Music Framework -->
+    <!-- Replace URL with a link to a warm, soft instrument track or lo-fi track (.mp3) -->
+    <audio id="bg-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+
+    <!-- Passkey Protection Screen -->
+    <div id="lock-screen">
+        <div class="lock-container">
+            <h2>A message for you...</h2>
+            <input type="password" id="passkey-input" placeholder="Enter passkey">
+            <button onclick="verifyPasskey()">Open Letter</button>
+            <p id="error-message" class="error-msg">That's not it, try again close to your heart.</p>
+        </div>
+    </div>
+
+    <!-- Heart Animation Background Canvas -->
+    <div id="heart-container"></div>
+
+    <!-- Letter Content Screen -->
+    <div id="content-screen">
+        <div class="container">
+            <header>
+                <h1 id="typed-title"></h1>
+                <p id="scroll-prompt" style="opacity: 0; transition: opacity 1s;">scroll down slowly • 🤍</p>
+            </header>
+
+            <main id="letter-body">
+                <!-- Paragraph 1 -->
+                <div class="paragraph-card">
+                    Hey. I know things might feel heavy right now, but I wanted to make this space just for you. Take a deep breath, leave the world outside for a minute, and just let me remind you how much you matter to me.
+                </div>
+
+                <!-- Paragraph 2 -->
+                <div class="paragraph-card">
+                    You carry so much on your shoulders, and you do it with so much grace, even when you feel like you're struggling. I see your effort, I see your heart, and I am incredibly proud of the person you are every single day.
+                </div>
+
+                <!-- Paragraph 3 -->
+                <div class="paragraph-card">
+                    No matter what comes next, you don’t have to face it alone. I am right here beside you, loving you through the quiet days and the chaotic ones. You are safe with me.
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Passkey Verification
+        function verifyPasskey() {
+            const input = document.getElementById('passkey-input').value;
+            const lockScreen = document.getElementById('lock-screen');
+            const contentScreen = document.getElementById('content-screen');
+            const errorMsg = document.getElementById('error-message');
+            const music = document.getElementById('bg-music');
+
+            if (input.toUpperCase() === "ILOVEYOU") {
+                // Unlock sequence animation
+                lockScreen.style.opacity = '0';
+                setTimeout(() => lockScreen.style.visibility = 'hidden', 1000);
+                
+                contentScreen.style.display = 'block';
+                setTimeout(() => {
+                    contentScreen.style.opacity = '1';
+                    startTypewriter("For My Favorite Person", 0);
+                    startHeartGenerator();
+                    initScrollAnimation();
+                    
+                    // Attempt to play music (will run if browser permissions allow)
+                    music.volume = 0.20; 
+                    music.play().catch(err => console.log("Audio autoplay blocked; waiting for user click."));
+                }, 100);
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('passkey-input').value = '';
+            }
+        }
+
+        // Trigger on Enter Key
+        document.getElementById('passkey-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyPasskey();
+        });
+
+        // Typewriter Effect for Header
+        function startTypewriter(text, i) {
+            if (i < text.length) {
+                document.getElementById("typed-title").innerHTML += text.charAt(i);
+                setTimeout(() => startTypewriter(text, i + 1), 100);
+            } else {
+                document.getElementById("scroll-prompt").style.opacity = "1";
+            }
+        }
+
+        // Floating Hearts Engine
+        function startHeartGenerator() {
+            const container = document.getElementById('heart-container');
+            const heartTypes = ['❤', '🌸', '✨', '🤍'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Randomize heart styles dynamically
+                heart.innerText = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 4) + 's'; // 4s to 7s variable speed
+                heart.style.fontSize = (Math.random() * 10 + 15) + 'px'; // 15px to 25px variable size
+                
+                container.appendChild(heart);
+                
+                // Clean up DOM elements after animation completes
+                setTimeout(() => heart.remove(), 7000);
+            }, 600); // New heart every 600ms
+        }
+
+        // Scroll Intersection Observer
+        function initScrollAnimation() {
+            const cards = document.querySelectorAll('.paragraph-card');
+            const observerOptions = {
+                root: null,
+                threshold: 0.15,
+                rootMargin: "0px 0px -40px 0px"
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            cards.forEach(card => observer.observe(card));
+        }
+    </script>
+</body>
+</html>
